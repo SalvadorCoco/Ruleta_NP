@@ -1,14 +1,14 @@
 const array_concursantes = [ 
     'Microbrush',
-    'Solución hemostática',
-    'Compresas',
-    'Guantes',
-    'Turbina TEALTH',
-    'Ionomero de cementación',
-    'Abrebocas',
-    'Espejo',
-    'Cuaderno 3M',
-    'Mini fresero DOCHEM'
+    'solución hemostática',
+    'compresas',
+    'guantes',
+    'turbina TEALTH',
+    'ionomero de cementacion',
+    'abrebocas',
+    'espejo',
+    'cuaderno 3M',
+    'mini fresero DOCHEM'
 ];
 
 let canvas = document.getElementById("idcanvas");
@@ -23,7 +23,7 @@ function ajustarCanvas() {
 
 let center;
 let movement;
-let maxSpeed = 10; // Velocidad máxima de giro
+let maxSpeed = 15; // Velocidad máxima de giro
 let currentSpeed = maxSpeed;
 let deceleration = 0.995; // Controla la desaceleración
 let isSpinning = false; // Para controlar que solo se pueda girar una vez a la vez
@@ -34,6 +34,14 @@ let coloresSegmentos = []; // Almacena los colores de los segmentos
 function generarColores() {
     for (let i = 0; i < array_concursantes.length; i++) {
         coloresSegmentos[i] = random_color(); // Almacena un color para cada segmento
+    }
+}
+
+// Función para mezclar el array de concursantes
+function mezclarArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
 }
 
@@ -51,6 +59,9 @@ function dibujarRuleta() {
     context.arc(center, center, center - 10, 0, 2 * Math.PI);
     context.fillStyle = 'black';
     context.fill();
+
+    // Mezclar los nombres cada vez que se dibuja la ruleta
+    mezclarArray(array_concursantes);
 
     for (let i = 0; i < array_concursantes.length; i++) {
         context.beginPath();
@@ -76,7 +87,8 @@ function girarRuleta() {
 
     isSpinning = true;
     currentSpeed = maxSpeed; // Reiniciar la velocidad al valor máximo
-    let giroAleatorio = Math.floor(Math.random() * 360 + 2160); // Mínimo 2160 grados (6 vueltas completas)
+    // Genera un giro aleatorio que es un múltiplo de 360 más un giro adicional
+    let giroAleatorio = Math.floor(Math.random() * 360 + 3600); // Al menos 10 giros completos
     let totalRotation = giroAleatorio + rotationAngle;
 
     movement = setInterval(function () {
@@ -90,7 +102,7 @@ function girarRuleta() {
             clearInterval(movement); // Detener el giro cuando la velocidad es muy baja
             rotationAngle = rotationAngle % 360; // Asegurarse de que el ángulo esté entre 0 y 360 grados
             isSpinning = false; // Permitir otro giro
-            // NO redibujar la ruleta para que no cambie de color
+            
         }
     }, 10); // 10ms intervalo para actualizar la rotación (puedes aumentar para mayor suavidad)
 }
